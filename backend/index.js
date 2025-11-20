@@ -11,14 +11,17 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/users", authRoutes);
 
-const PORT = process.env.PORT || 4000;
-
-// Mongo connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("Mongo error:", err));
-
 app.get("/", (req, res) => res.send("API running 🚀"));
 
-app.listen(PORT, () => console.log(`Server live on port ${PORT}`));
+const PORT = process.env.PORT || 4000;
+
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("Mongo error:", err));
+
+  app.listen(PORT, () => console.log(`Server live on port ${PORT}`));
+}
+
+export default app;
